@@ -27,6 +27,24 @@ public sealed class AuthValidationTests
         Assert.Contains(expectedMessage, errors["password"][0]);
     }
 
+    [Fact]
+    public void Registration_accepts_password_at_minimum_length()
+    {
+        var errors = AuthValidation.ValidateCredentials("alice@example.com", "A1234567");
+
+        Assert.Empty(errors);
+    }
+
+    [Fact]
+    public void Registration_accepts_password_at_maximum_length()
+    {
+        var password = new string('A', 127) + "1";
+
+        var errors = AuthValidation.ValidateCredentials("alice@example.com", password);
+
+        Assert.Empty(errors);
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -50,6 +68,16 @@ public sealed class AuthValidationTests
     }
 
     [Fact]
+    public void Registration_accepts_email_at_maximum_length()
+    {
+        var domain = string.Join(".", new string('a', 63), new string('b', 63), new string('c', 63), new string('d', 60));
+        var email = $"a@{domain}";
+
+        Assert.Equal(254, email.Length);
+        Assert.Empty(AuthValidation.ValidateCredentials(email, "Secret123"));
+    }
+
+    [Fact]
     public void Registration_rejects_password_longer_than_128_characters()
     {
         var password = new string('A', 128) + "1";
@@ -66,6 +94,16 @@ public sealed class AuthValidationTests
         var errors = AuthValidation.ValidateCredentials("alice@example.com", "simple", validatePasswordRules: false);
 
         Assert.Empty(errors);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void Login_rejects_missing_password(string? password)
+    {
+        var errors = AuthValidation.ValidateCredentials("alice@example.com", password, validatePasswordRules: false);
+
+        Assert.Contains("password", errors.Keys);
     }
 
     [Fact]

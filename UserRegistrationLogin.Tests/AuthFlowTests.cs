@@ -32,6 +32,12 @@ public sealed class AuthFlowTests
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var content = await response.Content.ReadAsStringAsync();
         Assert.DoesNotContain("passwordHash", content, StringComparison.OrdinalIgnoreCase);
+        using var responseBody = JsonDocument.Parse(content);
+        var responseUser = responseBody.RootElement;
+        Assert.True(responseUser.TryGetProperty("id", out var responseId));
+        Assert.NotEqual(Guid.Empty, responseId.GetGuid());
+        Assert.Equal("alice@example.com", responseUser.GetProperty("email").GetString());
+        Assert.True(responseUser.GetProperty("createdAt").GetDateTimeOffset() > DateTimeOffset.UnixEpoch);
         var stored = Assert.Single(factory.Users.Users);
         Assert.Equal("alice@example.com", stored.Email);
         Assert.NotEqual("Secret123", stored.PasswordHash);
@@ -56,6 +62,9 @@ public sealed class AuthFlowTests
         });
 
         Assert.Equal(HttpStatusCode.Conflict, duplicate.StatusCode);
+        using var duplicateBody = JsonDocument.Parse(await duplicate.Content.ReadAsStringAsync());
+        Assert.Equal("email_exists", duplicateBody.RootElement.GetProperty("code").GetString());
+        Assert.Contains("already exists", duplicateBody.RootElement.GetProperty("message").GetString(), StringComparison.OrdinalIgnoreCase);
         Assert.Single(factory.Users.Users);
     }
 
@@ -114,6 +123,15 @@ public sealed class AuthFlowTests
         var content = await response.Content.ReadAsStringAsync();
         Assert.Contains("Invalid email or password", content, StringComparison.Ordinal);
         Assert.DoesNotContain("alice@example.com", content, StringComparison.Ordinal);
+
+        var unknownEmailResponse = await client.PostAsJsonAsync("/api/auth/login", new
+        {
+            email = "nobody@example.com",
+            password = "WrongPass456"
+        });
+
+        Assert.Equal(HttpStatusCode.Unauthorized, unknownEmailResponse.StatusCode);
+        Assert.Equal(content, await unknownEmailResponse.Content.ReadAsStringAsync());
     }
 
     [Fact]
