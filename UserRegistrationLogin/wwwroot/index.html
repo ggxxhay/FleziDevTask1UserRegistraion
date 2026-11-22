@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Account access</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main class="page-shell">
+    <section class="auth-card" aria-labelledby="form-title">
+      <a class="brand" href="/" aria-label="Flezi Dev Auth home"><span class="brand-mark">F</span> Flezi Dev Auth</a>
+      <p class="eyebrow" id="form-eyebrow">YOUR SPACE STARTS HERE</p>
+      <h1 id="form-title">Welcome back</h1>
+      <p class="intro" id="form-intro">Sign in to pick up where you left off.</p>
+
+      <div class="mode-switch" role="tablist" aria-label="Account action">
+        <button class="mode-button is-active" id="login-tab" type="button" role="tab" aria-selected="true" data-mode="login">Sign in</button>
+        <button class="mode-button" id="register-tab" type="button" role="tab" aria-selected="false" data-mode="register">Create account</button>
+      </div>
+
+      <div class="alert" id="form-alert" role="alert" aria-live="polite" hidden></div>
+      <form id="auth-form" novalidate>
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <p class="field-error" id="email-error"></p>
+
+        <div class="label-row">
+          <label for="password">Password</label>
+          <span class="password-hint" id="password-hint">Your password</span>
+        </div>
+        <div class="password-field">
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          <button class="show-password" type="button" id="toggle-password" aria-label="Show password">Show</button>
+        </div>
+        <p class="field-error" id="password-error"></p>
+
+        <button class="submit-button" id="submit-button" type="submit">
+          <span id="submit-label">Sign in</span><span class="button-arrow" aria-hidden="true">→</span>
+        </button>
+      </form>
+      <p class="form-footnote" id="form-footnote">Protected with secure, private sign-in.</p>
+    </section>
+
+    <aside class="story-panel" aria-label="Welcome message">
+      <div class="orb orb-one"></div><div class="orb orb-two"></div>
+      <div class="story-content">
+        <span class="story-label"><span class="status-dot"></span> A little more you</span>
+        <h2>Make room for<br><em>what matters.</em></h2>
+        <p>Your account brings your plans, ideas, and next steps together in one calm place.</p>
+      </div>
+      <div class="story-footer"><span>Thoughtfully yours</span><span>01 — 04</span></div>
+    </aside>
+  </main>
+</body>
+</html>

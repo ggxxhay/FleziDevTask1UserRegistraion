@@ -1,0 +1,5 @@
+bin/
+obj/
+.vs/
+App_Data/users.json
+App_Data/*.tmp

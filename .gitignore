@@ -1,0 +1,15 @@
+.dotnet-cli/
+.nuget/
+.test-artifacts/
+.evidence-app/
+UserRegistrationLogin/bin/
+UserRegistrationLogin/obj/
+UserRegistrationLogin.Tests/bin/
+UserRegistrationLogin.Tests/obj/
+UserRegistrationLogin.Tests/**/DataProtectionKeys/
+~$*.pptx
+.evidence-run/
+evidence/edge-*-profile/
+UserRegistrationLogin/App_Data/users.json
+UserRegistrationLogin/App_Data/DataProtectionKeys/
+.~lock.*#
