@@ -92,6 +92,10 @@ public sealed class AuthFlowTests
     {
         using var factory = new TestAppFactory();
         using var client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+
+        var anonymousHome = await client.GetAsync("/");
+        Assert.Equal(HttpStatusCode.OK, anonymousHome.StatusCode);
+
         await client.PostAsJsonAsync("/api/auth/register", new { email = "alice@example.com", password = "Secret123" });
 
         var response = await client.PostAsJsonAsync("/api/auth/login", new { email = " ALICE@example.com ", password = "Secret123" });
@@ -108,6 +112,13 @@ public sealed class AuthFlowTests
         Assert.Equal(HttpStatusCode.OK, profile.StatusCode);
         var signedInUser = await profile.Content.ReadFromJsonAsync<AuthenticatedUserResponse>();
         Assert.Equal("alice@example.com", signedInUser?.Email);
+
+        var authenticatedHome = await client.GetAsync("/");
+        Assert.Equal(HttpStatusCode.Redirect, authenticatedHome.StatusCode);
+        Assert.Equal("/dashboard", authenticatedHome.Headers.Location?.OriginalString);
+
+        var dashboard = await client.GetAsync("/dashboard");
+        Assert.Equal(HttpStatusCode.OK, dashboard.StatusCode);
     }
 
     [Fact]

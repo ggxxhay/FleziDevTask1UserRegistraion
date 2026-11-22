@@ -59,8 +59,10 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", (IWebHostEnvironment environment) =>
-    Results.File(Path.Combine(environment.WebRootPath, "index.html"), "text/html"));
+app.MapGet("/", (ClaimsPrincipal principal, IWebHostEnvironment environment) =>
+    principal.Identity?.IsAuthenticated == true
+        ? Results.Redirect("/dashboard")
+        : Results.File(Path.Combine(environment.WebRootPath, "index.html"), "text/html"));
 
 app.MapPost("/api/auth/register", async (
     RegisterRequest request,
