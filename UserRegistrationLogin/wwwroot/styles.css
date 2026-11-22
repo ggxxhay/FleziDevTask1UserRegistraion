@@ -10,6 +10,10 @@
   text-rendering: optimizeLegibility;
 }
 
+html.checking-session body {
+  visibility: hidden;
+}
+
 * { box-sizing: border-box; }
 
 body {

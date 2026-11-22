@@ -14,6 +14,16 @@ const fields = {
   password,
 };
 
+fetch("/api/auth/me", { credentials: "same-origin" })
+  .then((response) => {
+    if (response.ok) {
+      window.location.replace("/dashboard");
+      return;
+    }
+    document.documentElement.classList.remove("checking-session");
+  })
+  .catch(() => document.documentElement.classList.remove("checking-session"));
+
 let mode = "login";
 
 function setMode(nextMode) {
